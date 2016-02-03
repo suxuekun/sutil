@@ -7,7 +7,11 @@
 //testing
 
 	var ns = sutil.getNamespace("org.example");
+	//global default is false
+	//open this in debug mode to see warnings that is there any Interface not correctly implemented
+	//
 	sutil.Interface.override("warning",true);
+
 	var iPerson = new sutil.Interface({
 		name:"iPerson",
 		methods:['getName'],
@@ -24,7 +28,7 @@
 		initialize:function(name){
 			this.name = name;
 		},
-		interfaces:[iPerson],
+		interfaces:[iPerson],//implemnts interface when define a class
 		methods:{
 			getName:function(){
 				return this.name; 
@@ -45,7 +49,7 @@
 		},
 		uper:Person,
 	})
-	Man.impl(iMan,{
+	Man.impl(iMan,{//implemnts interface after define a class with methods to override
 		say:function(){
 			return 'Hi! I am ' + this.name + "! ";
 		},
@@ -82,7 +86,7 @@
 		},
 		uper:Person,
 		interfaces:[iMan],
-		//warning:true
+		//warning:true,// open warning for this Interface
 	})
 
 	document.writeln('</br>you can see a warning in the console that <font color = yellow style="background:black">Interface iMan is not correctly implemented by Class Woman</font></br>');

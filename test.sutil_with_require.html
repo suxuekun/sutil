@@ -26,7 +26,7 @@
 		})
 
 		var Person = ns.Person = sutil.defineClass({
-			className:"Perons",
+			className:"Person",
 			initialize:function(name){
 				this.name = name;
 			},
@@ -93,7 +93,11 @@
 
 		document.writeln('</br>you can see a warning in the console that <font color = yellow style="background:black">Interface iMan is not correctly implemented by Class Woman</font></br>');
 
-		console.log('window.sutil == sutil in require',window.sutil == sutil);
+		console.log('window.sutil == sutil(in require)',window.sutil == sutil);
+
+		// console.log(p1.hasInterface(iMan)); // false
+		// console.log(Man.hasInterface(iMan)); // true
+
 	})
 
 	

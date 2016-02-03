@@ -13,7 +13,23 @@
 	var factory = function(){
 		var defineProp = Object.defineProperty;
 		var defaultKeys = ["initialize","uper","constructor"];
-
+		function _hasInterface(i){
+			var name = "";
+			if (typeof i == "string"){
+				name = i;
+			}else{
+				name = i.name;
+			}
+			if (this.interfaces && this.interfaces.length){
+				for (var k=0;k<this.interfaces.length;k++){
+					var j = this.interfaces[k];
+					if (name == j.name){
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 		function _override(clazz,key,method){
 			clazz.prototype[key] = method;
 			defineProp(clazz.prototype,key,customizedKeyConfig);
@@ -27,7 +43,6 @@
 		// functions for Class only
 		// not functions for instance
 		var defaults = {
-			interfaces:[],
 			override:function(key,method){
 				_override(this,key,method);
 			},
@@ -40,17 +55,20 @@
 			impl:function(i,methods){
 				this.overrides(methods);
 				if (i){
-					this.interfaces.push(i);
+					if(this.prototype.interfaces.indexOf(i) < 0){
+						this.prototype.interfaces.push(i);
+					}
 					var notImplementedNames = i.check(this);
 					if (notImplementedNames && notImplementedNames.length && i.warning){
-						console.dir(this);
 						console.warn("Interface "+ i.name +" is not correctly implemented by Class " + this.name+"\n"
 							+"missing methods: \n "+notImplementedNames.join("\n "));
 					}
 				}
-				
+			},
+			hasInterface:function(i){
+				return this.prototype.hasInterface(i);
+			},
 
-			}
 		}
 		// not enumerable for initialize uper(super) constructor
 		var defaultKeyConfig = {
@@ -135,8 +153,17 @@
 				_override(clazz,key,attributes[key]);
 			}
 			// interfaces
-			for (var key in interfaces){
-				var i = interfaces[key];
+			clazz.prototype.hasInterface = _hasInterface;
+			clazz.prototype.interfaces = [];
+			if (uper && uper.interfaces && uper.interfaces.length){
+				for (var k=0;k<uper.interfaces.length;k++){
+					var i = uper.interfaces[k];
+					clazz.impl(i);
+				}
+			}
+			
+			for (var k=0;k<interfaces.length;k++){
+				var i = interfaces[k];
 				clazz.impl(i);
 			}
 			return clazz;
