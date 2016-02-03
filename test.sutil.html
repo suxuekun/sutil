@@ -1,0 +1,92 @@
+<html>
+<head>
+	<script type="text/javascript" src = "js/sutil.js"></script>
+</head>
+<body>
+	<script>
+//testing
+
+	var ns = sutil.getNamespace("org.example");
+	sutil.Interface.override("warning",true);
+	var iPerson = new sutil.Interface({
+		name:"iPerson",
+		methods:['getName'],
+	})
+
+	var iMan = new sutil.Interface({
+		name:"iMan",
+		uper:iPerson,
+		methods:['say','getAge','setAge'],
+	})
+
+	var Person = ns.Person = sutil.defineClass({
+		className:"Perons",
+		initialize:function(name){
+			this.name = name;
+		},
+		interfaces:[iPerson],
+		methods:{
+			getName:function(){
+				return this.name; 
+			}
+		}
+	})
+
+	var p1 = new Person('sillyboy');
+	console.log('p1 is ',p1);
+	// print p1 name
+	document.writeln('p1 is ' + p1.getName() + '</br>');
+
+	var Man = ns.Man =sutil.defineClass({
+		className:"Man",
+		initialize:function(name,age){
+			this.uper.initialize.call(this,name);
+			this.age = age || 0;
+		},
+		uper:Person,
+	})
+	Man.impl(iMan,{
+		say:function(){
+			return 'Hi! I am ' + this.name + "! ";
+		},
+		getAge:function(){
+			return this.age;
+		},
+		setAge:function(age){
+			this.age = age;
+		}
+	});
+
+	var john = new Man('john');
+	console.log('john is :',john);
+	document.writeln(john.getName() + " : " + john.say() + "I am " + john.getAge() + " years old!</br>");
+	document.writeln('sry, forgot initialize age! set age to 30;//john.setAge(30)</br>');
+	//set age
+	john.setAge(30);
+	document.writeln(john.getName() + " : " + john.say() + "I am " + john.getAge() + " years old!</br>");
+
+	//p1.say(); //p1 can not say err
+	console.log('org.example.Person == Person == p1.constructor:',org.example.Person == Person && Person == p1.constructor);
+	console.dir(org.example.Person);
+	console.log('org.example.Man == Man == john.constructor:',org.example.Man == Man && Man == john.constructor);
+	console.dir(org.example.Man);
+
+	document.writeln('p1 is Person implements iPerson; Person can not say()</br>');
+	document.writeln('john is Man implements iMan; Man say()</br>');
+
+	var Woman = ns.Woman = sutil.defineClass({
+		className:"Woman",
+		initialize:function(name,age){
+			this.uper.initialize.call(this,name);
+			this.age = age || 0;
+		},
+		uper:Person,
+		interfaces:[iMan],
+		//warning:true
+	})
+
+	document.writeln('</br>you can see a warning in the console that <font color = yellow style="background:black">Interface iMan is not correctly implemented by Class Woman</font></br>');
+	</script>
+
+</body>
+</html>
