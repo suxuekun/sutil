@@ -9,7 +9,7 @@
 * @author suxuekun@gmail.com sillyboy
 */
 (function(_global){
-
+	'use strict';
 	var factory = function(){
 		var defineProp = Object.defineProperty;
 		var defaultKeys = ["initialize","uper","constructor"];
@@ -190,10 +190,7 @@
 			var currentChain = root;
 			for (var i=0;i<chain.length;i++){
 				childName = chain[i];
-				if (currentChain[childName] == null){
-					currentChain[childName] = {};
-				}
-				currentChain = currentChain[childName];
+				currentChain = currentChain[childName] = currentChain[childName] || {};
 			}
 			return currentChain;
 		}
@@ -226,11 +223,9 @@
 				this.name = option.name || "";
 				this.methods=[];
 				if (this.uper && this.uper.methods){
-
 					for (var i = 0;i<uper.methods.length;i++){
 						this.methods.push(uper.methods[i])
 					}
-
 				}
 				if (option.methods && option.methods.length){
 					for (var i = 0;i<option.methods.length;i++)
@@ -284,5 +279,3 @@
 		factory();
 	}
 })(window)
-
-	// )(window)
